@@ -64,11 +64,16 @@ function setToken(token, delay){
 }
 
 
+
+
 // Gestion du bouton de recherche
 $("#btnRecherche").on("click", function(){ 
 	var token = getToken(); 
 	// Récupération de la zone texte
 	var nomArtiste = $("#inputNomArtiste").val();
+
+	// Suppression de la zone d'erreur
+	$('#erreurRecherche').html("");
 
 	// Vérification que l'input contient bien quelque chose
 		// La fonction trim va supprimer les espaces avant et apres le texte 
@@ -76,9 +81,11 @@ $("#btnRecherche").on("click", function(){
 	if( $.trim(nomArtiste).length === 0)
 	{
 		// Pas de nom d'artiste, on ouvre un message d'erreur
+		/* Premiere idée, mini modale bootbox
 		bootbox.alert({
 			message: '<p class="text-center danger">Vous n\'avez pas entré de nom d\'artiste !</p>',
-		});
+		});*/
+		$('#erreurRecherche').html("Vous devez saisir le nom d'un artiste !");
 	}else{
 		// On va pouvoir traiter l'information
 
@@ -91,26 +98,59 @@ $("#btnRecherche").on("click", function(){
 				type: 'artist'
 			},
 			success : function(data, statut){ 
+				// Ajout d'une couleur de fond au tableau
+				$('#result').css({'background-color': 'rgba(255,255,255,.8)','overflow': 'scroll'});
 				var result = data.artists.items;
-				var html =''; 
+				var html ='<table class="table table-striped">'; 
+				// Variable de gestion des lignes dans le tableau
+				var td = 0;
 				for (var i=0; i<result.length; i++){
 					var indiceDernier=(result[i].images.length - 1); 
-					// Certains albums n'ayant pas d'image je ne les traitent pas 
+					// Certains artistes n'ayant pas d'image je ne les traitent pas 
 					if(indiceDernier >= 0)
 					{
-						
-						html+=
-						'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-							'<img src="'+result[i].images[indiceDernier].url+
-								'"  width="'+result[i].images[indiceDernier].width+
-								'" height="'+result[i].images[indiceDernier].height+'"/>'; 
-						html+=
-							'<p>'+result[i].name+'</p>'+
-						'</div>';
+						switch(td){
+							case 0: // Initialisation de la ligne
+							html += '<tr>'+
+												'<td class="col-4">'+
+													'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+														'<img src="'+result[i].images[indiceDernier].url+
+															// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
+															//	'"  width="'+result[i].images[indiceDernier].width+
+															//	'" height="'+result[i].images[indiceDernier].height+'"/>'; 
+															'" width = 100px height = 100px "/>'+
+														'<p>'+result[i].name+'</p>'+
+													'</div>'+
+												'</td>';
+							td++;
+							break;
+							case 2: // Terminaison de la ligne	
+							html += '<td class="col-4">'+
+												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+													'<img src="'+result[i].images[indiceDernier].url+
+														'" width = 100px height = 100px "/>'+
+													'<p>'+result[i].name+'</p>'+
+												'</div>'+
+											'</td>'+
+										'</tr>';
+							td=0;
+							break;
+							default: // Remplissage ligne	
+							html += '<td class="col-4">'+
+												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+													'<img src="'+result[i].images[indiceDernier].url+
+														'" width = 100px height = 100px "/>'+
+													'<p>'+result[i].name+'</p>'+
+												'</div>'+
+											'</td>';
+							td++;	
+						}
 					}
 				}
+				html+='</table>'
 				$("#result").html(html); 
-				$(".result-artists").css('cursor', 'pointer'); //endroit important
+				$(".result-artists").css('cursor', 'pointer'); 
+				// Au click on ouvre tout les albums de l'artiste
 				$(".result-artists").on("click", function(){
 					var id_selection = $(this).attr('id-artiste');
 					envoiRequeteAlbums(id_selection); 
@@ -132,18 +172,53 @@ function envoiRequeteAlbums (id_selection) {
 			url: 'https://api.spotify.com/v1/artists/'+id_selection+'/albums',
 			success : function(data, statut){ 
 				var result = data.items; 
-				var html =''; 
+				var html ='<table class="table table-striped">'; 
+				// Variable de gestion des lignes dans le tableau
+				var td = 0;
 				for (var i=0; i<result.length; i++){
-					var indiceDernier=result[i].images.length - 1; 
-						html+=
-						'<div class="result-albums" id-album="'+result[i].id+'">'+
-							'<img src="'+result[i].images[indiceDernier].url+
-								'"  width="'+result[i].images[indiceDernier].width+
-								'" height="'+result[i].images[indiceDernier].height+'"/>'; 
-						html+=
-							'<p>'+result[i].name+'</p>'+
-						'</div>';
+					var indiceDernier=(result[i].images.length - 1); 
+					// Certains albums n'ayant pas d'image je ne les traitent pas 
+					if(indiceDernier >= 0)
+					{
+						switch(td){
+							case 0: // Initialisation de la ligne
+							html += '<tr>'+
+												'<td class="col-4">'+
+													'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+														'<img src="'+result[i].images[indiceDernier].url+
+															// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
+															//	'"  width="'+result[i].images[indiceDernier].width+
+															//	'" height="'+result[i].images[indiceDernier].height+'"/>'; 
+															'" width = 100px height = 100px "/>'+
+														'<p>'+result[i].name+'</p>'+
+													'</div>'+
+												'</td>';
+							td++;
+							break;
+							case 2: // Terminaison de la ligne	
+							html += '<td class="col-4">'+
+												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+													'<img src="'+result[i].images[indiceDernier].url+
+														'" width = 100px height = 100px "/>'+
+													'<p>'+result[i].name+'</p>'+
+												'</div>'+
+											'</td>'+
+										'</tr>';
+							td=0;
+							break;
+							default: // Remplissage ligne	
+							html += '<td class="col-4">'+
+												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+													'<img src="'+result[i].images[indiceDernier].url+
+														'" width = 100px height = 100px "/>'+
+													'<p>'+result[i].name+'</p>'+
+												'</div>'+
+											'</td>';
+							td++;	
+						}
+					}
 				}
+				html+='</table>'
 				$("#result").html(html); 
 			},
 			//headers
