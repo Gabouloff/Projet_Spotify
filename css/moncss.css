@@ -5,5 +5,19 @@
   font-size: 120%;
 }
 
-#result {
+.result-artists{
+  color: black;
+}
+
+a:hover{
+  text-decoration: none; 
+}
+
+#artisteActuel{
+  margin-top:15px;
+}
+
+#artisteActuel img{
+  position:relative;
+  right:13px;
 }

@@ -1,3 +1,4 @@
+// Gestion d'authorisation 
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 // Replace with your app's client ID, redirect URI and desired scopes
@@ -126,7 +127,7 @@ function recherche(){
 							case 0: // Initialisation de la ligne
 							html += '<tr>'+
 												'<td class="col-4">'+
-													'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+													'<div class="result-artists" id="'+result[i].id+'">'+
 														'<img src="'+result[i].images[0].url+
 															// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
 															//	'"  width="'+result[i].images[indiceDernier].width+
@@ -139,7 +140,7 @@ function recherche(){
 							break;
 							case 2: // Terminaison de la ligne	
 							html += '<td class="col-4">'+
-												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+												'<div class="result-artists" id="'+result[i].id+'">'+
 													'<img src="'+result[i].images[0].url+
 														'" width = 100px height = 100px "/>'+
 													'<p>'+result[i].name+'</p>'+
@@ -150,7 +151,7 @@ function recherche(){
 							break;
 							default: // Remplissage ligne	
 							html += '<td class="col-4">'+
-												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+												'<div class="result-artists" id="'+result[i].id+'">'+
 													'<img src="'+result[i].images[0].url+
 														'" width = 100px height = 100px "/>'+
 													'<p>'+result[i].name+'</p>'+
@@ -165,7 +166,10 @@ function recherche(){
 				$(".result-artists").css('cursor', 'pointer'); 
 				// Au click on ouvre tout les albums de l'artiste
 				$(".result-artists").on("click", function(){
-					var id_selection = $(this).attr('id-artiste');
+					var id_selection = $(this).attr('id');
+					// Mise a jour de la zone "Artiste Actuel"
+					$("#artisteActuel").html( $("#"+id_selection).html() );
+					$('#artisteActuel').css({'color': 'rgba(255,255,255)','font-weight':'bold'});
 					envoiRequeteAlbums(id_selection); 
 				})
 			},
@@ -197,42 +201,49 @@ function envoiRequeteAlbums (id_selection) {
 							case 0: // Initialisation de la ligne
 							html += '<tr>'+
 												'<td class="col-4">'+
-													'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-														'<img src="'+result[i].images[indiceDernier].url+
-															// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
-															//	'"  width="'+result[i].images[indiceDernier].width+
-															//	'" height="'+result[i].images[indiceDernier].height+'"/>'; 
-															'" width = 100px height = 100px "/>'+
-														'<p>'+result[i].name+'</p>'+
-													'</div>'+
+													'<a href="'+result[i].external_urls.spotify+'" target="blank">'+
+														'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+															'<img src="'+result[i].images[0].url+
+																// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
+																//	'"  width="'+result[i].images[indiceDernier].width+
+																//	'" height="'+result[i].images[indiceDernier].height+'"/>'; 
+																'" width = 100px height = 100px "/>'+
+															'<p>'+result[i].name+'</p>'+
+														'</div>'+
+													'</a>'+
 												'</td>';
 							td++;
 							break;
 							case 2: // Terminaison de la ligne	
 							html += '<td class="col-4">'+
-												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-													'<img src="'+result[i].images[indiceDernier].url+
-														'" width = 100px height = 100px "/>'+
-													'<p>'+result[i].name+'</p>'+
-												'</div>'+
-											'</td>'+
-										'</tr>';
+										'<a href="'+result[i].external_urls.spotify+'" target="blank">'+
+											'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+												'<img src="'+result[i].images[0].url+
+													'" width = 100px height = 100px "/>'+
+												'<p>'+result[i].name+'</p>'+
+											'</div>'+
+										'</a>'+
+									'</td>'+
+								'</tr>';
 							td=0;
 							break;
 							default: // Remplissage ligne	
 							html += '<td class="col-4">'+
-												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-													'<img src="'+result[i].images[indiceDernier].url+
-														'" width = 100px height = 100px "/>'+
-													'<p>'+result[i].name+'</p>'+
-												'</div>'+
-											'</td>';
+										'<a href="'+result[i].external_urls.spotify+'" target="blank">'+
+											'<div class="result-artists" id-artiste="'+result[i].id+'">'+
+												'<img src="'+result[i].images[0].url+
+													'" width = 100px height = 100px "/>'+
+												'<p>'+result[i].name+'</p>'+
+											'</div>'+
+										'</a>'+
+									'</td>';
 							td++;	
 						}
 					}
 				}
 				html+='</table>'
-				$("#result").html(html); 
+				$("#result").html(html);
+				$(".result-artists").css('cursor', 'pointer');  
 			},
 			//headers
 			beforeSend: function (xhr) {
