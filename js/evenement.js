@@ -2,7 +2,7 @@ const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 // Replace with your app's client ID, redirect URI and desired scopes
 const clientId = '57cd64960c0a47eaa56cb10a42bc43f4';
-const redirectUri = 'http://anthony-gabouloff.fr/VisualStudio/index.html';
+const redirectUri = 'http://www.anthony-gabouloff.fr/VisualStudio/index.html';
 const scopes = [
   'user-top-read'
 ];   
