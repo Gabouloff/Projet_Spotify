@@ -98,6 +98,7 @@ $("#btnRecherche").on("click", function(){
 					// Certains albums n'ayant pas d'image je ne les traitent pas 
 					if(indiceDernier >= 0)
 					{
+						
 						html+=
 						'<div class="result-artists" id-artiste="'+result[i].id+'">'+
 							'<img src="'+result[i].images[indiceDernier].url+
