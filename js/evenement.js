@@ -2,10 +2,10 @@ const authEndpoint = 'https://accounts.spotify.com/authorize';
 
 // Replace with your app's client ID, redirect URI and desired scopes
 const clientId = '57cd64960c0a47eaa56cb10a42bc43f4';
-const redirectUri = 'http://127.0.0.1/VisualStudio/index.html';
+const redirectUri = 'http://anthony-gabouloff.fr/VisualStudio/index.html';
 const scopes = [
   'user-top-read'
-];
+];   
 
 const nomItemJetonSessionStorage = 'jeton';
 
@@ -65,9 +65,22 @@ function setToken(token, delay){
 
 
 
+// Au clic sur le bouton recherche lancer la fonction
+$("#btnRecherche").on("click", function(){   
+	recherche();
+});
 
-// Gestion du bouton de recherche
-$("#btnRecherche").on("click", function(){ 
+// Touche entrer, lancer la fonction
+$('#inputNomArtiste').keypress(function(event){
+    var keycode = (event.which);
+    if(keycode == '13'){
+        recherche();
+    }
+});
+
+
+// Fonction de gestion de la recherche
+function recherche(){
 	var token = getToken(); 
 	// Récupération de la zone texte
 	var nomArtiste = $("#inputNomArtiste").val();
@@ -114,7 +127,7 @@ $("#btnRecherche").on("click", function(){
 							html += '<tr>'+
 												'<td class="col-4">'+
 													'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-														'<img src="'+result[i].images[indiceDernier].url+
+														'<img src="'+result[i].images[0].url+
 															// J'uniformise les pochettes d'albums a une taille de 100 par 100 px
 															//	'"  width="'+result[i].images[indiceDernier].width+
 															//	'" height="'+result[i].images[indiceDernier].height+'"/>'; 
@@ -127,7 +140,7 @@ $("#btnRecherche").on("click", function(){
 							case 2: // Terminaison de la ligne	
 							html += '<td class="col-4">'+
 												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-													'<img src="'+result[i].images[indiceDernier].url+
+													'<img src="'+result[i].images[0].url+
 														'" width = 100px height = 100px "/>'+
 													'<p>'+result[i].name+'</p>'+
 												'</div>'+
@@ -138,7 +151,7 @@ $("#btnRecherche").on("click", function(){
 							default: // Remplissage ligne	
 							html += '<td class="col-4">'+
 												'<div class="result-artists" id-artiste="'+result[i].id+'">'+
-													'<img src="'+result[i].images[indiceDernier].url+
+													'<img src="'+result[i].images[0].url+
 														'" width = 100px height = 100px "/>'+
 													'<p>'+result[i].name+'</p>'+
 												'</div>'+
@@ -162,7 +175,7 @@ $("#btnRecherche").on("click", function(){
 			}
 		});
 	}
-});
+};
 
 
 function envoiRequeteAlbums (id_selection) {
