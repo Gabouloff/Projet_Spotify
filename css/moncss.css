@@ -1,5 +1,20 @@
+
 .danger{
   color: red;
   font-weight: bold;
   font-size: 120%;
+}
+
+#result {
+ height: 200px;
+ overflow: scroll;
+ overflow-x: hidden;
+}
+
+.affichage{
+  height: 100%;
+  width: 40.5rem;
+  padding-bottom: 0;
+  position: relative;
+  position:right;
 }
